@@ -7,30 +7,50 @@
 <title>Płatności</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- ====== FIREBASE — DODANE DO SYNCHRONIZACJI ====== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB_qFoMqy5QbgQTesVXeQb4sAtCkRV6gd8",
+  authDomain: "arkusz-platnosci.firebaseapp.com",
+  databaseURL: "https://arkusz-platnosci-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "arkusz-platnosci",
+  storageBucket: "arkusz-platnosci.firebasestorage.app",
+  messagingSenderId: "312880426071",
+  appId: "1:312880426071:web:9442f669e3f6bc50ff8712"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth = firebase.auth();
+const fbDb = firebase.database();
+const fbRef = fbDb.ref('platnosci/data');
+</script>
+<!-- ====== KONIEC BLOKU FIREBASE ====== -->
+
 <style>
 :root{
-  --navy:#0f2340;
-  --navy2:#1b3a5c;
-  --navy3:#2a5285;
-  --paper:#f0f3f8;
-  --card:#ffffff;
-  --accent:#c97b4a;
-  --ok:#3d7a52;
-  --ok-bg:#e8f5ed;
-  --due:#b6543c;
-  --due-bg:#fdf0ed;
-  --warn:#c47e1a;
-  --warn-bg:#fdf5e6;
-  --purple:#6b3fa0;
-  --purple-bg:#f0ebfa;
-  --line:#d0d8e8;
-  --muted:#6b7a96;
-  --ink:#0f2340;
+--navy:#0f2340;
+--navy2:#1b3a5c;
+--navy3:#2a5285;
+--paper:#f0f3f8;
+--card:#ffffff;
+--accent:#c97b4a;
+--ok:#3d7a52;
+--ok-bg:#e8f5ed;
+--due:#b6543c;
+--due-bg:#fdf0ed;
+--warn:#c47e1a;
+--warn-bg:#fdf5e6;
+--purple:#6b3fa0;
+--purple-bg:#f0ebfa;
+--line:#d0d8e8;
+--muted:#6b7a96;
+--ink:#0f2340;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
 body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--paper);color:var(--ink);padding-bottom:100px;}
-
-/* HEADER */
 header{background:var(--navy);color:#fff;padding:16px 18px 14px;position:sticky;top:0;z-index:10;}
 .header-top{display:flex;align-items:center;justify-content:space-between;}
 header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
@@ -40,13 +60,9 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .mnbtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;width:28px;height:28px;font-size:1rem;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .month-label{font-size:0.88rem;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.75);min-width:155px;}
 .today-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:3px 9px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.7);cursor:pointer;}
-
-/* TABS */
 .tabs{display:flex;background:var(--navy2);border-bottom:1px solid rgba(255,255,255,0.08);}
 .tab{flex:1;padding:9px 4px;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.5);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .15s;}
 .tab.active{color:#fff;border-bottom-color:var(--accent);}
-
-/* SUMMARY */
 .summary{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--card);border-bottom:1px solid var(--line);}
 .sum-box{padding:12px 14px;border-right:1px solid var(--line);}
 .sum-box:last-child{border-right:none;}
@@ -55,8 +71,6 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .sum-val.red{color:var(--due);}
 .sum-val.green{color:var(--ok);}
 .sum-val.blue{color:var(--navy3);}
-
-/* DEBT OVERVIEW */
 .debt-panel{background:var(--card);border-bottom:1px solid var(--line);padding:12px 16px 14px;}
 .debt-panel-title{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:9px;}
 .debt-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
@@ -66,11 +80,7 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .debt-fill.done{background:var(--ok);}
 .debt-info{font-size:0.7rem;color:var(--muted);white-space:nowrap;min-width:95px;text-align:right;}
 .debt-more{font-size:0.72rem;color:var(--navy3);cursor:pointer;text-align:center;margin-top:6px;}
-
-/* SECTION LABEL */
 .sec-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);padding:14px 16px 5px;}
-
-/* ITEM CARD */
 .item{background:var(--card);margin:5px 12px;border-radius:10px;padding:11px 11px;display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-left:3px solid var(--line);}
 .item.done{opacity:0.42;}
 .item.overdue{border-left-color:var(--due);}
@@ -80,11 +90,9 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .item.cat-sub{border-left-color:var(--accent);}
 .item.cat-annual{border-left-color:var(--purple);}
 .item.hidden-item{display:none;}
-
 .check{width:34px;height:34px;min-width:34px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:all .15s;flex-shrink:0;}
 .check.x{color:var(--due);border-color:var(--due);}
 .check.v{color:var(--ok);border-color:var(--ok);background:var(--ok-bg);}
-
 .info{flex:1;min-width:0;}
 .iname{font-size:0.92rem;font-weight:700;color:var(--ink);}
 .imeta{font-size:0.72rem;color:var(--muted);margin-top:2px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
@@ -97,28 +105,20 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .overdue-lbl{color:var(--due);font-weight:700;}
 .soon-lbl{color:var(--warn);font-weight:700;}
 .hidden-lbl{color:var(--muted);font-style:italic;}
-
 .inst-bar{margin-top:4px;display:flex;align-items:center;gap:6px;}
 .inst-track{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden;}
 .inst-fill{height:100%;border-radius:2px;background:var(--navy3);}
 .inst-lbl{font-size:0.67rem;color:var(--muted);white-space:nowrap;}
-
 .amount-col{text-align:right;flex-shrink:0;}
 .amount{font-weight:700;font-size:0.92rem;white-space:nowrap;color:var(--ink);}
 .remaining{display:block;font-size:0.67rem;color:var(--purple);margin-top:1px;}
 .end-date{display:block;font-size:0.67rem;color:var(--muted);margin-top:1px;}
-
 .item-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
 .ia-btn{background:none;border:none;cursor:pointer;color:var(--line);font-size:0.85rem;padding:2px;transition:color .15s;line-height:1;}
 .ia-btn:hover{color:var(--navy3);}
 .ia-btn.del:hover{color:var(--due);}
-
 .empty{padding:36px 22px;text-align:center;color:var(--muted);font-size:0.88rem;line-height:1.6;}
-
-/* FAB */
 .fab{position:fixed;bottom:22px;right:18px;width:54px;height:54px;border-radius:50%;background:var(--navy2);color:#fff;border:none;font-size:1.65rem;box-shadow:0 4px 18px rgba(15,35,64,0.35);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;}
-
-/* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(10,20,40,0.6);z-index:20;align-items:flex-end;justify-content:center;}
 .modal-bg.open{display:flex;}
 .modal{background:var(--paper);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:20px 18px 34px;max-height:92vh;overflow-y:auto;}
@@ -140,592 +140,593 @@ header h1{font-size:1.25rem;font-weight:700;letter-spacing:0.03em;color:#fff;}
 .btn.primary{background:var(--navy);color:#fff;}
 .btn.secondary{background:transparent;color:var(--muted);border:1px solid var(--line);}
 .btn.danger{background:var(--due);color:#fff;}
-
-/* ARCHIVE TAB */
 .archive-item{background:var(--card);margin:5px 12px;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;border:1px solid var(--line);opacity:0.7;}
 .arch-name{flex:1;font-size:0.88rem;color:var(--muted);}
 .arch-amt{font-size:0.88rem;font-weight:700;color:var(--muted);}
 .restore-btn{font-size:0.68rem;border:1px solid var(--line);background:none;border-radius:6px;padding:3px 8px;cursor:pointer;color:var(--navy3);font-family:inherit;}
+/* pasek statusu synchronizacji — DODANE */
+#syncStatus{font-size:0.65rem;text-align:center;padding:4px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.15);}
 </style>
 </head>
 <body>
 
+<div id="syncStatus">Łączenie...</div>
+
 <header>
-  <div class="header-top">
-    <h1>💳 Płatności</h1>
-    <div class="header-actions">
-      <button class="hbtn" onclick="exportData()">Eksport</button>
-      <button class="hbtn" onclick="document.getElementById('importFile').click()">Import</button>
-      <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importData(event)">
-    </div>
-  </div>
-  <div class="month-nav">
-    <button class="mnbtn" onclick="changeMonth(-1)">&#8249;</button>
-    <span class="month-label" id="monthLabel"></span>
-    <button class="mnbtn" onclick="changeMonth(1)">&#8250;</button>
-    <button class="today-btn" onclick="goToday()">Dziś</button>
-  </div>
+<div class="header-top">
+<h1>💳 Płatności</h1>
+<div class="header-actions">
+<button class="hbtn" onclick="exportData()">Eksport</button>
+<button class="hbtn" onclick="document.getElementById('importFile').click()">Import</button>
+<input type="file" id="importFile" accept="application/json" style="display:none" onchange="importData(event)">
+</div>
+</div>
+<div class="month-nav">
+<button class="mnbtn" onclick="changeMonth(-1)">&#8249;</button>
+<span class="month-label" id="monthLabel"></span>
+<button class="mnbtn" onclick="changeMonth(1)">&#8250;</button>
+<button class="today-btn" onclick="goToday()">Dziś</button>
+</div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="setTab('month')">Ten miesiąc</button>
-  <button class="tab" onclick="setTab('debts')">Kredyty</button>
-  <button class="tab" onclick="setTab('all')">Wszystkie</button>
-  <button class="tab" onclick="setTab('archive')">Archiwum</button>
+<button class="tab active" onclick="setTab('month')">Ten miesiąc</button>
+<button class="tab" onclick="setTab('debts')">Kredyty</button>
+<button class="tab" onclick="setTab('all')">Wszystkie</button>
+<button class="tab" onclick="setTab('archive')">Archiwum</button>
 </div>
 
 <div id="backupBanner" style="display:none;background:var(--warn-bg);color:var(--warn);font-size:0.76rem;padding:8px 16px;border-bottom:1px solid var(--line);align-items:center;justify-content:space-between;gap:10px;">
-  <span id="backupBannerText"></span>
-  <button onclick="exportData()" style="background:var(--warn);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;">Zrób kopię</button>
+<span id="backupBannerText"></span>
+<button onclick="exportData()" style="background:var(--warn);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;">Zrób kopię</button>
 </div>
 
-<!-- MONTH VIEW -->
 <div id="view-month">
-  <div class="summary">
-    <div class="sum-box"><div class="sum-lbl">Do zapłaty</div><div class="sum-val red" id="sumDue">—</div></div>
-    <div class="sum-box"><div class="sum-lbl">Opłacone</div><div class="sum-val green" id="sumDone">—</div></div>
-    <div class="sum-box"><div class="sum-lbl">Razem</div><div class="sum-val blue" id="sumTotal">—</div></div>
-  </div>
-  <div id="monthContent"></div>
+<div class="summary">
+<div class="sum-box"><div class="sum-lbl">Do zapłaty</div><div class="sum-val red" id="sumDue">—</div></div>
+<div class="sum-box"><div class="sum-lbl">Opłacone</div><div class="sum-val green" id="sumDone">—</div></div>
+<div class="sum-box"><div class="sum-lbl">Razem</div><div class="sum-val blue" id="sumTotal">—</div></div>
+</div>
+<div id="monthContent"></div>
 </div>
 
-<!-- DEBTS VIEW -->
 <div id="view-debts" style="display:none">
-  <div id="debtsContent"></div>
+<div id="debtsContent"></div>
 </div>
 
-<!-- ALL VIEW -->
 <div id="view-all" style="display:none">
-  <div id="allContent"></div>
+<div id="allContent"></div>
 </div>
 
-<!-- ARCHIVE VIEW -->
 <div id="view-archive" style="display:none">
-  <div id="archiveContent"></div>
+<div id="archiveContent"></div>
 </div>
 
 <button class="fab" onclick="openModal(null)">+</button>
 
-<!-- MODAL -->
 <div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h2 id="modalTitle">Nowa płatność</h2>
-
-    <div class="type-toggle" id="typeToggle">
-      <button type="button" data-type="credit"  onclick="setType('credit')">💳 Kredyt/rata</button>
-      <button type="button" data-type="cyclic"  onclick="setType('cyclic')">🔄 Cykliczna</button>
-      <button type="button" data-type="media"   onclick="setType('media')">💡 Media</button>
-      <button type="button" data-type="sub"     onclick="setType('sub')">📱 Abonament</button>
-      <button type="button" data-type="annual"  onclick="setType('annual')">📅 Coroczna</button>
-      <button type="button" data-type="other"   onclick="setType('other')">📌 Inne</button>
-    </div>
-
-    <div class="field">
-      <label>Nazwa</label>
-      <input type="text" id="fName" placeholder="np. Kredyt PKO, Czynsz, Netflix">
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Kwota (zł)</label>
-        <input type="number" id="fAmount" placeholder="np. 820.36" step="0.01">
-      </div>
-      <div class="field">
-        <label>Dzień płatności</label>
-        <input type="number" id="fDay" min="1" max="31" placeholder="np. 10">
-      </div>
-    </div>
-
-    <!-- CREDIT FIELDS -->
-    <div class="section-toggle" id="creditFields">
-      <div class="field-row">
-        <div class="field">
-          <label>Łącznie rat</label>
-          <input type="number" id="fTotalInst" min="1" placeholder="36">
-        </div>
-        <div class="field">
-          <label>Aktualna rata</label>
-          <input type="number" id="fCurrentInst" min="1" placeholder="1" value="1">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Pozostało do spłaty (zł)</label>
-          <input type="number" id="fRemaining" placeholder="45000" step="0.01">
-        </div>
-        <div class="field">
-          <label>Data końca (np. 2028-06)</label>
-          <input type="text" id="fEndDate" placeholder="2028-06">
-        </div>
-      </div>
-    </div>
-
-    <!-- ANNUAL FIELDS -->
-    <div class="section-toggle" id="annualFields">
-      <div class="field">
-        <label>Miesiąc płatności (1–12)</label>
-        <input type="number" id="fAnnualMonth" min="1" max="12" placeholder="np. 3 = marzec">
-      </div>
-      <div class="hint">Pojawi się tylko w wybranym miesiącu każdego roku.</div>
-    </div>
-
-    <!-- FREQUENCY FIELDS (dla cyklicznych, mediów, abonamentów, innych) -->
-    <div class="section-toggle" id="freqFields">
-      <div class="field-row">
-        <div class="field">
-          <label>Częstotliwość</label>
-          <select id="fFreq" onchange="updateFreqMonthVisibility()">
-            <option value="1">Co miesiąc</option>
-            <option value="2">Co 2 miesiące</option>
-            <option value="3">Co 3 miesiące</option>
-            <option value="6">Co 6 miesięcy</option>
-          </select>
-        </div>
-        <div class="field" id="freqMonthField" style="display:none">
-          <label>Miesiąc płatności (np. najbliższy)</label>
-          <select id="fFreqMonth">
-            <option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option>
-            <option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option>
-            <option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option>
-            <option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option>
-          </select>
-        </div>
-      </div>
-      <div class="hint" id="freqHint" style="display:none">Wskaż dowolny miesiąc, w którym ta opłata wypada — aplikacja sama policzy kolejne (np. co 2 mies. od stycznia = styczeń, marzec, maj...).</div>
-    </div>
-
-    <div class="field">
-      <label>Notatka (opcjonalnie)</label>
-      <input type="text" id="fNote" placeholder="np. do 2038, wspólnie...">
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn secondary" onclick="closeModal()">Anuluj</button>
-      <button class="btn primary" onclick="saveItem()">Zapisz</button>
-    </div>
-  </div>
+<div class="modal">
+<h2 id="modalTitle">Nowa płatność</h2>
+<div class="type-toggle" id="typeToggle">
+<button type="button" data-type="credit" onclick="setType('credit')">💳 Kredyt/rata</button>
+<button type="button" data-type="cyclic" onclick="setType('cyclic')">🔄 Cykliczna</button>
+<button type="button" data-type="media" onclick="setType('media')">💡 Media</button>
+<button type="button" data-type="sub" onclick="setType('sub')">📱 Abonament</button>
+<button type="button" data-type="annual" onclick="setType('annual')">📅 Coroczna</button>
+<button type="button" data-type="other" onclick="setType('other')">📌 Inne</button>
+</div>
+<div class="field">
+<label>Nazwa</label>
+<input type="text" id="fName" placeholder="np. Kredyt PKO, Czynsz, Netflix">
+</div>
+<div class="field-row">
+<div class="field">
+<label>Kwota (zł)</label>
+<input type="number" id="fAmount" placeholder="np. 820.36" step="0.01">
+</div>
+<div class="field">
+<label>Dzień płatności</label>
+<input type="number" id="fDay" min="1" max="31" placeholder="np. 10">
+</div>
+</div>
+<div class="section-toggle" id="creditFields">
+<div class="field-row">
+<div class="field">
+<label>Łącznie rat</label>
+<input type="number" id="fTotalInst" min="1" placeholder="36">
+</div>
+<div class="field">
+<label>Aktualna rata</label>
+<input type="number" id="fCurrentInst" min="1" placeholder="1" value="1">
+</div>
+</div>
+<div class="field-row">
+<div class="field">
+<label>Pozostało do spłaty (zł)</label>
+<input type="number" id="fRemaining" placeholder="45000" step="0.01">
+</div>
+<div class="field">
+<label>Data końca (np. 2028-06)</label>
+<input type="text" id="fEndDate" placeholder="2028-06">
+</div>
+</div>
+</div>
+<div class="section-toggle" id="annualFields">
+<div class="field">
+<label>Miesiąc płatności (1–12)</label>
+<input type="number" id="fAnnualMonth" min="1" max="12" placeholder="np. 3 = marzec">
+</div>
+<div class="hint">Pojawi się tylko w wybranym miesiącu każdego roku.</div>
+</div>
+<div class="section-toggle" id="freqFields">
+<div class="field-row">
+<div class="field">
+<label>Częstotliwość</label>
+<select id="fFreq" onchange="updateFreqMonthVisibility()">
+<option value="1">Co miesiąc</option>
+<option value="2">Co 2 miesiące</option>
+<option value="3">Co 3 miesiące</option>
+<option value="6">Co 6 miesięcy</option>
+</select>
+</div>
+<div class="field" id="freqMonthField" style="display:none">
+<label>Miesiąc płatności (np. najbliższy)</label>
+<select id="fFreqMonth">
+<option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option>
+<option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option>
+<option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option>
+<option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option>
+</select>
+</div>
+</div>
+<div class="hint" id="freqHint" style="display:none">Wskaż dowolny miesiąc, w którym ta opłata wypada — aplikacja sama policzy kolejne (np. co 2 mies. od stycznia = styczeń, marzec, maj...).</div>
+</div>
+<div class="field">
+<label>Notatka (opcjonalnie)</label>
+<input type="text" id="fNote" placeholder="np. do 2038, wspólnie...">
+</div>
+<div class="modal-actions">
+<button class="btn secondary" onclick="closeModal()">Anuluj</button>
+<button class="btn primary" onclick="saveItem()">Zapisz</button>
+</div>
+</div>
 </div>
 
 <script>
 const MONTHS_PL = ["Styczeń","Luty","Marzec","Kwiecień","Maj","Czerwiec","Lipiec","Sierpień","Wrzesień","Październik","Listopad","Grudzień"];
-
 const CAT_LABELS = {credit:'Kredyt',cyclic:'Cykliczna',media:'Media',sub:'Abonament',annual:'Coroczna',other:'Inne'};
 const CAT_TAG_CLS = {credit:'kredyt',cyclic:'inne',media:'media',sub:'sub',annual:'coroczna',other:'inne'};
 const CAT_ITEM_CLS = {credit:'cat-credit',cyclic:'',media:'cat-media',sub:'cat-sub',annual:'cat-annual',other:''};
 
-/* Dane przykładowe (fikcyjne) — wczytują się tylko przy pierwszym uruchomieniu.
-   Twoje prawdziwe dane są zapisane w przeglądarce i NIE są częścią tego pliku. */
 const DEFAULTS = [
-  {id:'d1', type:'credit', name:'Kredyt przykładowy', amount:1234.56, day:10, totalInstallments:120, currentInstallment:12, remaining:null, endDate:'2035-01', note:'przykład'},
-  {id:'d2', type:'credit', name:'Raty za sprzęt',     amount:250,     day:15, totalInstallments:24,  currentInstallment:6,  remaining:null, endDate:'', note:'przykład'},
-  {id:'d3', type:'media',  name:'Czynsz (przykład)',  amount:500,     day:10, note:''},
-  {id:'d4', type:'media',  name:'Prąd (przykład)',    amount:180,     day:24, freq:2, freqMonth:1, note:'co 2 miesiące'},
-  {id:'d5', type:'sub',    name:'Serwis streamingowy',amount:29.99,   day:5,  note:'przykład'},
-  {id:'d6', type:'annual', name:'Ubezpieczenie roczne',amount:600,    day:20, annualMonth:3, note:'przykład'},
-  {id:'d7', type:'other',  name:'Inna opłata',        amount:100,     day:12, note:'przykład'},
+{id:'d1', type:'credit', name:'Kredyt przykładowy', amount:1234.56, day:10, totalInstallments:120, currentInstallment:12, remaining:null, endDate:'2035-01', note:'przykład'},
+{id:'d2', type:'credit', name:'Raty za sprzęt', amount:250, day:15, totalInstallments:24, currentInstallment:6, remaining:null, endDate:'', note:'przykład'},
+{id:'d3', type:'media', name:'Czynsz (przykład)', amount:500, day:10, note:''},
+{id:'d4', type:'media', name:'Prąd (przykład)', amount:180, day:24, freq:2, freqMonth:1, note:'co 2 miesiące'},
+{id:'d5', type:'sub', name:'Serwis streamingowy',amount:29.99, day:5, note:'przykład'},
+{id:'d6', type:'annual', name:'Ubezpieczenie roczne',amount:600, day:20, annualMonth:3, note:'przykład'},
+{id:'d7', type:'other', name:'Inna opłata', amount:100, day:12, note:'przykład'},
 ];
 
-/* ---- DATA ---- */
+/* ---- DATA (localStorage jako lokalna kopia/cache) ---- */
 function loadData(){
-  const raw = localStorage.getItem('platnosci_v3');
-  if(raw) return JSON.parse(raw);
-  // migrate from v2
-  const v2 = localStorage.getItem('platnosci_v2');
-  if(v2){ try{ const d=JSON.parse(v2); return {items:d.items||[], paid:d.paid||{}, archived:[]}; }catch(e){} }
-  return {items:JSON.parse(JSON.stringify(DEFAULTS)), paid:{}, archived:[]};
+const raw = localStorage.getItem('platnosci_v3');
+if(raw) return JSON.parse(raw);
+const v2 = localStorage.getItem('platnosci_v2');
+if(v2){ try{ const d=JSON.parse(v2); return {items:d.items||[], paid:d.paid||{}, archived:[]}; }catch(e){} }
+return {items:JSON.parse(JSON.stringify(DEFAULTS)), paid:{}, archived:[]};
 }
-function saveData(d){ localStorage.setItem('platnosci_v3', JSON.stringify(d)); }
+
+/* saveData: zapisuje lokalnie ORAZ wysyła do Firebase, żeby zsynchronizować z innymi urządzeniami */
+let _suppressUpload = false;
+function saveData(d){
+localStorage.setItem('platnosci_v3', JSON.stringify(d));
+if(!_suppressUpload && fbAuth.currentUser){
+fbRef.set(d).catch(err=>console.error('Błąd zapisu do Firebase:', err));
+}
+}
 
 function monthKey(y,m){ return y+'-'+(m+1); }
 function isPaid(data,id,y,m){ const mk=monthKey(y,m); return !!(data.paid[mk]&&data.paid[mk][id]); }
 function setPaid(data,id,y,m,v){ const mk=monthKey(y,m); if(!data.paid[mk])data.paid[mk]={}; data.paid[mk][id]=v; }
-
 function fmt(n){ return (Math.round(n*100)/100).toLocaleString('pl-PL',{minimumFractionDigits:2,maximumFractionDigits:2})+' zł'; }
 function fmtShort(n){ if(n>=100000) return Math.round(n/1000)+' tys. zł'; if(n>=10000) return (Math.round(n/100)/10).toFixed(1)+' tys. zł'; return Math.round(n)+' zł'; }
 function esc(s){ const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
 
 function appPaidBefore(data,item,y,m){
-  let count=0;
-  Object.keys(data.paid).forEach(mk=>{
-    const [ky,km1]=mk.split('-').map(Number);
-    const km=km1-1;
-    if(ky<y||(ky===y&&km<m)) if(data.paid[mk][item.id]) count++;
-  });
-  return count;
+let count=0;
+Object.keys(data.paid).forEach(mk=>{
+const [ky,km1]=mk.split('-').map(Number);
+const km=km1-1;
+if(ky<y||(ky===y&&km<m)) if(data.paid[mk][item.id]) count++;
+});
+return count;
 }
 function instForMonth(item,data,y,m){
-  return item.currentInstallment + appPaidBefore(data,item,y,m);
+return item.currentInstallment + appPaidBefore(data,item,y,m);
 }
 
-/* ---- KWOTA W DANYM MIESIĄCU (korekta dla zmiennych rachunków) ---- */
 function amountFor(data,item,y,m){
-  const mk=monthKey(y,m);
-  if(data.override&&data.override[mk]&&data.override[mk][item.id]!=null) return data.override[mk][item.id];
-  return Number(item.amount)||0;
+const mk=monthKey(y,m);
+if(data.override&&data.override[mk]&&data.override[mk][item.id]!=null) return data.override[mk][item.id];
+return Number(item.amount)||0;
 }
 function hasOverride(data,id,y,m){
-  const mk=monthKey(y,m);
-  return !!(data.override&&data.override[mk]&&data.override[mk][id]!=null);
+const mk=monthKey(y,m);
+return !!(data.override&&data.override[mk]&&data.override[mk][id]!=null);
 }
 function editAmount(id){
-  const data=loadData();
-  const it=data.items.find(x=>x.id===id); if(!it) return;
-  const cur=amountFor(data,it,viewYear,viewMonth);
-  const inp=prompt('Kwota w tym miesiącu dla „'+it.name+'”.\nZostaw puste, aby wrócić do standardowej ('+fmt(Number(it.amount)||0)+').',cur);
-  if(inp===null) return; // anulowano
-  const mk=monthKey(viewYear,viewMonth);
-  if(!data.override) data.override={};
-  if(!data.override[mk]) data.override[mk]={};
-  if(inp.trim()===''){ delete data.override[mk][it.id]; }
-  else {
-    const v=parseFloat(inp.replace(',','.'));
-    if(isNaN(v)){ alert('To nie jest poprawna kwota.'); return; }
-    data.override[mk][it.id]=v;
-  }
-  saveData(data); render();
+const data=loadData();
+const it=data.items.find(x=>x.id===id); if(!it) return;
+const cur=amountFor(data,it,viewYear,viewMonth);
+const inp=prompt('Kwota w tym miesiącu dla „'+it.name+'”.\nZostaw puste, aby wrócić do standardowej ('+fmt(Number(it.amount)||0)+').',cur);
+if(inp===null) return;
+const mk=monthKey(viewYear,viewMonth);
+if(!data.override) data.override={};
+if(!data.override[mk]) data.override[mk]={};
+if(inp.trim()===''){ delete data.override[mk][it.id]; }
+else {
+const v=parseFloat(inp.replace(',','.'));
+if(isNaN(v)){ alert('To nie jest poprawna kwota.'); return; }
+data.override[mk][it.id]=v;
+}
+saveData(data); render();
 }
 
-/* ---- STATE ---- */
 let viewYear, viewMonth, currentTab='month', debtExpanded=false, editingId=null;
 let currentType='cyclic';
-
 function goToday(){ const n=new Date(); viewYear=n.getFullYear(); viewMonth=n.getMonth(); render(); }
 function changeMonth(d){ viewMonth+=d; if(viewMonth>11){viewMonth=0;viewYear++;} if(viewMonth<0){viewMonth=11;viewYear--;} render(); }
 function setTab(t){ currentTab=t; document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['month','debts','all','archive'][i]===t)); render(); }
 function toggleDebt(){ debtExpanded=!debtExpanded; render(); }
 
-/* ---- RENDER ---- */
 function render(){
-  const data=loadData();
-  const now=new Date();
-  const isCurrent=viewYear===now.getFullYear()&&viewMonth===now.getMonth();
-
-  document.getElementById('monthLabel').textContent=MONTHS_PL[viewMonth]+' '+viewYear;
-
-  ['month','debts','all','archive'].forEach(t=>{ document.getElementById('view-'+t).style.display=currentTab===t?'block':'none'; });
-
-  if(currentTab==='month') renderMonth(data,now,isCurrent);
-  if(currentTab==='debts') renderDebts(data,now);
-  if(currentTab==='all')   renderAll(data);
-  if(currentTab==='archive') renderArchive(data);
-
-  // przypomnienie o kopii zapasowej (co 14 dni)
-  const banner=document.getElementById('backupBanner');
-  const last=data.lastExport?new Date(data.lastExport):null;
-  const days=last?Math.floor((now-last)/86400000):null;
-  if(days===null||days>=14){
-    document.getElementById('backupBannerText').textContent=days===null
-      ?'Nie masz jeszcze kopii zapasowej danych.'
-      :'Ostatnia kopia zapasowa: '+days+' dni temu.';
-    banner.style.display='flex';
-  } else banner.style.display='none';
+const data=loadData();
+const now=new Date();
+const isCurrent=viewYear===now.getFullYear()&&viewMonth===now.getMonth();
+document.getElementById('monthLabel').textContent=MONTHS_PL[viewMonth]+' '+viewYear;
+['month','debts','all','archive'].forEach(t=>{ document.getElementById('view-'+t).style.display=currentTab===t?'block':'none'; });
+if(currentTab==='month') renderMonth(data,now,isCurrent);
+if(currentTab==='debts') renderDebts(data,now);
+if(currentTab==='all') renderAll(data);
+if(currentTab==='archive') renderArchive(data);
+const banner=document.getElementById('backupBanner');
+const last=data.lastExport?new Date(data.lastExport):null;
+const days=last?Math.floor((now-last)/86400000):null;
+if(days===null||days>=14){
+document.getElementById('backupBannerText').textContent=days===null
+?'Nie masz jeszcze kopii zapasowej danych.'
+:'Ostatnia kopia zapasowa: '+days+' dni temu.';
+banner.style.display='flex';
+} else banner.style.display='none';
 }
 
 function itemVisibleThisMonth(item,data,y,m){
-  if(item.hidden) return false;
-  if(item.type==='annual') return item.annualMonth===(m+1);
-  if(item.type==='credit'){
-    const inst=instForMonth(item,data,y,m);
-    return inst>=1&&inst<=item.totalInstallments;
-  }
-  // cyclic, media, sub, other — z uwzględnieniem częstotliwości (co N miesięcy)
-  const f=item.freq||1;
-  if(f<=1) return true;
-  const anchor=(item.freqMonth||1)-1;           // 0-11
-  const diff=((m-anchor)%f+f)%f;                // odległość od miesiąca-kotwicy
-  return diff===0;
+if(item.hidden) return false;
+if(item.type==='annual') return item.annualMonth===(m+1);
+if(item.type==='credit'){
+const inst=instForMonth(item,data,y,m);
+return inst>=1&&inst<=item.totalInstallments;
+}
+const f=item.freq||1;
+if(f<=1) return true;
+const anchor=(item.freqMonth||1)-1;
+const diff=((m-anchor)%f+f)%f;
+return diff===0;
 }
 
 function renderMonth(data,now,isCurrent){
-  const active=data.items.filter(i=>!i.archived && itemVisibleThisMonth(i,data,viewYear,viewMonth));
-
-  const byCat={credit:[],media:[],sub:[],annual:[],cyclic:[],other:[]};
-  active.forEach(i=>{ const c=i.type||'other'; (byCat[c]||byCat.other).push(i); });
-
-  let due=0,done=0,total=0;
-  active.forEach(i=>{ const p=isPaid(data,i.id,viewYear,viewMonth); const a=amountFor(data,i,viewYear,viewMonth); total+=a; if(p)done+=a; else due+=a; });
-  document.getElementById('sumDue').textContent=fmt(due);
-  document.getElementById('sumDone').textContent=fmt(done);
-  document.getElementById('sumTotal').textContent=fmt(total);
-
-  const order=['credit','media','sub','annual','cyclic','other'];
-  const secNames={credit:'Kredyty i raty',media:'Media',sub:'Abonamenty',annual:'Coroczne',cyclic:'Cykliczne',other:'Inne'};
-  let html='';
-  order.forEach(cat=>{
-    const items=byCat[cat];
-    if(!items||!items.length) return;
-    const sorted=[...items].sort((a,b)=>{
-      const pa=isPaid(data,a.id,viewYear,viewMonth),pb=isPaid(data,b.id,viewYear,viewMonth);
-      if(pa!==pb) return pa?1:-1;
-      return (a.day||99)-(b.day||99);
-    });
-    html+=`<div class="sec-label">${secNames[cat]}</div>`;
-    sorted.forEach(it=>{ html+=itemHtml(it,data,now,isCurrent,true); });
-  });
-  if(!html) html='<div class="empty">Brak płatności na ten miesiąc.<br>Dotknij + aby dodać.</div>';
-  document.getElementById('monthContent').innerHTML=html;
+const active=data.items.filter(i=>!i.archived && itemVisibleThisMonth(i,data,viewYear,viewMonth));
+const byCat={credit:[],media:[],sub:[],annual:[],cyclic:[],other:[]};
+active.forEach(i=>{ const c=i.type||'other'; (byCat[c]||byCat.other).push(i); });
+let due=0,done=0,total=0;
+active.forEach(i=>{ const p=isPaid(data,i.id,viewYear,viewMonth); const a=amountFor(data,i,viewYear,viewMonth); total+=a; if(p)done+=a; else due+=a; });
+document.getElementById('sumDue').textContent=fmt(due);
+document.getElementById('sumDone').textContent=fmt(done);
+document.getElementById('sumTotal').textContent=fmt(total);
+const order=['credit','media','sub','annual','cyclic','other'];
+const secNames={credit:'Kredyty i raty',media:'Media',sub:'Abonamenty',annual:'Coroczne',cyclic:'Cykliczne',other:'Inne'};
+let html='';
+order.forEach(cat=>{
+const items=byCat[cat];
+if(!items||!items.length) return;
+const sorted=[...items].sort((a,b)=>{
+const pa=isPaid(data,a.id,viewYear,viewMonth),pb=isPaid(data,b.id,viewYear,viewMonth);
+if(pa!==pb) return pa?1:-1;
+return (a.day||99)-(b.day||99);
+});
+html+=`<div class="sec-label">${secNames[cat]}</div>`;
+sorted.forEach(it=>{ html+=itemHtml(it,data,now,isCurrent,true); });
+});
+if(!html) html='<div class="empty">Brak płatności na ten miesiąc.<br>Dotknij + aby dodać.</div>';
+document.getElementById('monthContent').innerHTML=html;
 }
 
 function renderDebts(data,now){
-  const credits=data.items.filter(i=>!i.archived&&i.type==='credit');
-  if(!credits.length){ document.getElementById('debtsContent').innerHTML='<div class="empty">Brak kredytów i rat.</div>'; return; }
-
-  let totalDebt=0;
-  credits.forEach(i=>{ if(i.remaining!=null) totalDebt+=Number(i.remaining); });
-
-  let html='<div class="debt-panel">';
-  if(totalDebt>0) html+=`<div style="margin-bottom:10px;font-size:0.78rem;color:var(--muted)">Łączne zadłużenie: <strong style="color:var(--navy)">${fmt(totalDebt)}</strong></div>`;
-
-  credits.forEach(it=>{
-    const inst=instForMonth(it,data,viewYear,viewMonth);
-    const paidN=Math.max(0,it.currentInstallment-1+appPaidBefore(data,it,viewYear,viewMonth));
-    const tot=it.totalInstallments;
-    const pct=tot>0?Math.min(100,Math.round(paidN/tot*100)):0;
-    const left=Math.max(0,tot-paidN);
-    const isDone=paidN>=tot;
-    let infoStr=`${paidN}/${tot} rat · zostało ${left}`;
-    if(it.remaining!=null) infoStr+=' · '+fmtShort(it.remaining);
-    if(it.endDate) infoStr+=' · do '+it.endDate;
-    html+=`<div class="debt-row">
-      <span class="debt-name" title="${esc(it.name)}">${esc(it.name)}</span>
-      <div class="debt-track"><div class="debt-fill ${isDone?'done':''}" style="width:${pct}%"></div></div>
-      <span class="debt-info">${infoStr}</span>
-    </div>`;
-  });
-  html+='</div>';
-  html+='<div class="sec-label">Szczegóły</div>';
-  credits.forEach(it=>{ html+=itemHtml(it,data,now,true,false); });
-  document.getElementById('debtsContent').innerHTML=html;
+const credits=data.items.filter(i=>!i.archived&&i.type==='credit');
+if(!credits.length){ document.getElementById('debtsContent').innerHTML='<div class="empty">Brak kredytów i rat.</div>'; return; }
+let totalDebt=0;
+credits.forEach(i=>{ if(i.remaining!=null) totalDebt+=Number(i.remaining); });
+let html='<div class="debt-panel">';
+if(totalDebt>0) html+=`<div style="margin-bottom:10px;font-size:0.78rem;color:var(--muted)">Łączne zadłużenie: <strong style="color:var(--navy)">${fmt(totalDebt)}</strong></div>`;
+credits.forEach(it=>{
+const inst=instForMonth(it,data,viewYear,viewMonth);
+const paidN=Math.max(0,it.currentInstallment-1+appPaidBefore(data,it,viewYear,viewMonth));
+const tot=it.totalInstallments;
+const pct=tot>0?Math.min(100,Math.round(paidN/tot*100)):0;
+const left=Math.max(0,tot-paidN);
+const isDone=paidN>=tot;
+let infoStr=`${paidN}/${tot} rat · zostało ${left}`;
+if(it.remaining!=null) infoStr+=' · '+fmtShort(it.remaining);
+if(it.endDate) infoStr+=' · do '+it.endDate;
+html+=`<div class="debt-row">
+<span class="debt-name" title="${esc(it.name)}">${esc(it.name)}</span>
+<div class="debt-track"><div class="debt-fill ${isDone?'done':''}" style="width:${pct}%"></div></div>
+<span class="debt-info">${infoStr}</span>
+</div>`;
+});
+html+='</div>';
+html+='<div class="sec-label">Szczegóły</div>';
+credits.forEach(it=>{ html+=itemHtml(it,data,now,true,false); });
+document.getElementById('debtsContent').innerHTML=html;
 }
 
 function renderAll(data){
-  const active=data.items.filter(i=>!i.archived);
-  if(!active.length){ document.getElementById('allContent').innerHTML='<div class="empty">Brak pozycji. Dodaj pierwszą klikając +</div>'; return; }
-  const sorted=[...active].sort((a,b)=>(a.day||99)-(b.day||99));
-  const now=new Date();
-  let html='<div class="sec-label">Wszystkie aktywne ('+active.length+')</div>';
-  sorted.forEach(it=>{ html+=itemHtml(it,data,now,true,false); });
-  document.getElementById('allContent').innerHTML=html;
+const active=data.items.filter(i=>!i.archived);
+if(!active.length){ document.getElementById('allContent').innerHTML='<div class="empty">Brak pozycji. Dodaj pierwszą klikając +</div>'; return; }
+const sorted=[...active].sort((a,b)=>(a.day||99)-(b.day||99));
+const now=new Date();
+let html='<div class="sec-label">Wszystkie aktywne ('+active.length+')</div>';
+sorted.forEach(it=>{ html+=itemHtml(it,data,now,true,false); });
+document.getElementById('allContent').innerHTML=html;
 }
 
 function renderArchive(data){
-  const arch=data.items.filter(i=>i.archived);
-  if(!arch.length){ document.getElementById('archiveContent').innerHTML='<div class="empty">Archiwum jest puste.<br>Ukryte/zakończone płatności pojawią się tutaj.</div>'; return; }
-  let html='<div class="sec-label">Archiwum ('+arch.length+')</div>';
-  arch.forEach(it=>{
-    html+=`<div class="archive-item">
-      <span class="arch-name">${esc(it.name)} <span style="font-size:0.68rem">(${CAT_LABELS[it.type]||it.type})</span></span>
-      <span class="arch-amt">${fmt(it.amount)}</span>
-      <button class="restore-btn" onclick="restoreItem('${it.id}')">Przywróć</button>
-      <button class="restore-btn" style="color:var(--due)" onclick="deleteItem('${it.id}')">Usuń</button>
-    </div>`;
-  });
-  document.getElementById('archiveContent').innerHTML=html;
+const arch=data.items.filter(i=>i.archived);
+if(!arch.length){ document.getElementById('archiveContent').innerHTML='<div class="empty">Archiwum jest puste.<br>Ukryte/zakończone płatności pojawią się tutaj.</div>'; return; }
+let html='<div class="sec-label">Archiwum ('+arch.length+')</div>';
+arch.forEach(it=>{
+html+=`<div class="archive-item">
+<span class="arch-name">${esc(it.name)} <span style="font-size:0.68rem">(${CAT_LABELS[it.type]||it.type})</span></span>
+<span class="arch-amt">${fmt(it.amount)}</span>
+<button class="restore-btn" onclick="restoreItem('${it.id}')">Przywróć</button>
+<button class="restore-btn" style="color:var(--due)" onclick="deleteItem('${it.id}')">Usuń</button>
+</div>`;
+});
+document.getElementById('archiveContent').innerHTML=html;
 }
 
 function itemHtml(it,data,now,isCurrent,showCheck){
-  const paid=isPaid(data,it.id,viewYear,viewMonth);
-  const day=it.day||null;
-  const overdue=isCurrent&&!paid&&day&&day<now.getDate();
-  const soon=isCurrent&&!paid&&day&&(day-now.getDate())>=0&&(day-now.getDate())<=3;
-
-  let cls='item '+(CAT_ITEM_CLS[it.type]||'');
-  if(paid) cls+=' done';
-  if(overdue) cls+=' overdue';
-  if(soon&&!overdue) cls+=' due-soon';
-
-  let meta=[];
-  if(day){
-    const ds=day+'.'+String(viewMonth+1).padStart(2,'0');
-    if(overdue) meta.push(`<span class="overdue-lbl">‼ Termin: ${ds}</span>`);
-    else if(soon) meta.push(`<span class="soon-lbl">⚡ do ${ds}</span>`);
-    else meta.push(`<span>do ${day}.</span>`);
-  }
-  const tc=CAT_TAG_CLS[it.type]||'inne';
-  meta.push(`<span class="tag ${tc}">${CAT_LABELS[it.type]||it.type}</span>`);
-  if((it.freq||1)>1) meta.push(`<span class="tag inne">co ${it.freq} mies.</span>`);
-  if(it.note) meta.push(`<span style="font-style:italic">${esc(it.note)}</span>`);
-
-  let instHtml='', remHtml='', endHtml='';
-  if(it.type==='credit'){
-    const inst=instForMonth(it,data,viewYear,viewMonth);
-    const paidN=Math.max(0,inst-1);
-    const tot=it.totalInstallments;
-    const pct=tot>0?Math.min(100,Math.round(paidN/tot*100)):0;
-    const left=Math.max(0,tot-inst+1);
-    instHtml=`<div class="inst-bar">
-      <div class="inst-track"><div class="inst-fill" style="width:${pct}%"></div></div>
-      <span class="inst-lbl">rata ${inst}/${tot} · zostało ${left}</span>
-    </div>`;
-    if(it.remaining!=null) remHtml=`<span class="remaining">${fmt(it.remaining)} do spłaty</span>`;
-    if(it.endDate) endHtml=`<span class="end-date">do ${it.endDate}</span>`;
-  }
-
-  const checkHtml=showCheck?`<div class="check ${paid?'v':'x'}" onclick="toggle('${it.id}')">${paid?'✓':'✗'}</div>`:'<div style="width:10px"></div>';
-
-  const shownAmount=amountFor(data,it,viewYear,viewMonth);
-  const overridden=hasOverride(data,it.id,viewYear,viewMonth);
-  const amountHtml=showCheck
-    ?`<span class="amount" style="cursor:pointer;border-bottom:1px dashed var(--line)" onclick="editAmount('${it.id}')" title="Kliknij, aby zmienić kwotę w tym miesiącu">${fmt(shownAmount)}</span>`
-    :`<span class="amount">${fmt(shownAmount)}</span>`;
-  const overrideHtml=overridden?`<span class="end-date">standardowo ${fmt(Number(it.amount)||0)}</span>`:'';
-
-  return `<div class="${cls}" id="item-${it.id}">
-    ${checkHtml}
-    <div class="info">
-      <div class="iname">${esc(it.name)}</div>
-      <div class="imeta">${meta.join('')}</div>
-      ${instHtml}
-    </div>
-    <div class="amount-col">
-      ${amountHtml}
-      ${overrideHtml}${remHtml}${endHtml}
-    </div>
-    <div class="item-actions">
-      <button class="ia-btn" onclick="openModal('${it.id}')" title="Edytuj">✎</button>
-      <button class="ia-btn del" onclick="archiveItem('${it.id}')" title="Ukryj/Archiwizuj">⤓</button>
-    </div>
-  </div>`;
+const paid=isPaid(data,it.id,viewYear,viewMonth);
+const day=it.day||null;
+const overdue=isCurrent&&!paid&&day&&day<now.getDate();
+const soon=isCurrent&&!paid&&day&&(day-now.getDate())>=0&&(day-now.getDate())<=3;
+let cls='item '+(CAT_ITEM_CLS[it.type]||'');
+if(paid) cls+=' done';
+if(overdue) cls+=' overdue';
+if(soon&&!overdue) cls+=' due-soon';
+let meta=[];
+if(day){
+const ds=day+'.'+String(viewMonth+1).padStart(2,'0');
+if(overdue) meta.push(`<span class="overdue-lbl">‼ Termin: ${ds}</span>`);
+else if(soon) meta.push(`<span class="soon-lbl">⚡ do ${ds}</span>`);
+else meta.push(`<span>do ${day}.</span>`);
+}
+const tc=CAT_TAG_CLS[it.type]||'inne';
+meta.push(`<span class="tag ${tc}">${CAT_LABELS[it.type]||it.type}</span>`);
+if((it.freq||1)>1) meta.push(`<span class="tag inne">co ${it.freq} mies.</span>`);
+if(it.note) meta.push(`<span style="font-style:italic">${esc(it.note)}</span>`);
+let instHtml='', remHtml='', endHtml='';
+if(it.type==='credit'){
+const inst=instForMonth(it,data,viewYear,viewMonth);
+const paidN=Math.max(0,inst-1);
+const tot=it.totalInstallments;
+const pct=tot>0?Math.min(100,Math.round(paidN/tot*100)):0;
+const left=Math.max(0,tot-inst+1);
+instHtml=`<div class="inst-bar">
+<div class="inst-track"><div class="inst-fill" style="width:${pct}%"></div></div>
+<span class="inst-lbl">rata ${inst}/${tot} · zostało ${left}</span>
+</div>`;
+if(it.remaining!=null) remHtml=`<span class="remaining">${fmt(it.remaining)} do spłaty</span>`;
+if(it.endDate) endHtml=`<span class="end-date">do ${it.endDate}</span>`;
+}
+const checkHtml=showCheck?`<div class="check ${paid?'v':'x'}" onclick="toggle('${it.id}')">${paid?'✓':'✗'}</div>`:'<div style="width:10px"></div>';
+const shownAmount=amountFor(data,it,viewYear,viewMonth);
+const overridden=hasOverride(data,it.id,viewYear,viewMonth);
+const amountHtml=showCheck
+?`<span class="amount" style="cursor:pointer;border-bottom:1px dashed var(--line)" onclick="editAmount('${it.id}')" title="Kliknij, aby zmienić kwotę w tym miesiącu">${fmt(shownAmount)}</span>`
+:`<span class="amount">${fmt(shownAmount)}</span>`;
+const overrideHtml=overridden?`<span class="end-date">standardowo ${fmt(Number(it.amount)||0)}</span>`:'';
+return `<div class="${cls}" id="item-${it.id}">
+${checkHtml}
+<div class="info">
+<div class="iname">${esc(it.name)}</div>
+<div class="imeta">${meta.join('')}</div>
+${instHtml}
+</div>
+<div class="amount-col">
+${amountHtml}
+${overrideHtml}${remHtml}${endHtml}
+</div>
+<div class="item-actions">
+<button class="ia-btn" onclick="openModal('${it.id}')" title="Edytuj">✎</button>
+<button class="ia-btn del" onclick="archiveItem('${it.id}')" title="Ukryj/Archiwizuj">⤓</button>
+</div>
+</div>`;
 }
 
-/* ---- TOGGLE PAID ---- */
 function toggle(id){
-  const data=loadData();
-  const cur=isPaid(data,id,viewYear,viewMonth);
-  setPaid(data,id,viewYear,viewMonth,!cur);
-  saveData(data); render();
+const data=loadData();
+const cur=isPaid(data,id,viewYear,viewMonth);
+setPaid(data,id,viewYear,viewMonth,!cur);
+saveData(data); render();
 }
 
-/* ---- ARCHIVE / RESTORE / DELETE ---- */
 function archiveItem(id){
-  if(!confirm('Ukryć/zarchiwizować tę pozycję? Znajdziesz ją w zakładce Archiwum.')) return;
-  const data=loadData();
-  const it=data.items.find(x=>x.id===id);
-  if(it){ it.archived=true; saveData(data); render(); }
+if(!confirm('Ukryć/zarchiwizować tę pozycję? Znajdziesz ją w zakładce Archiwum.')) return;
+const data=loadData();
+const it=data.items.find(x=>x.id===id);
+if(it){ it.archived=true; saveData(data); render(); }
 }
 function restoreItem(id){
-  const data=loadData();
-  const it=data.items.find(x=>x.id===id);
-  if(it){ it.archived=false; saveData(data); render(); }
+const data=loadData();
+const it=data.items.find(x=>x.id===id);
+if(it){ it.archived=false; saveData(data); render(); }
 }
 function deleteItem(id){
-  if(!confirm('Trwale usunąć? Tej operacji nie można cofnąć.')) return;
-  const data=loadData();
-  data.items=data.items.filter(x=>x.id!==id);
-  saveData(data); render();
+if(!confirm('Trwale usunąć? Tej operacji nie można cofnąć.')) return;
+const data=loadData();
+data.items=data.items.filter(x=>x.id!==id);
+saveData(data); render();
 }
 
-/* ---- MODAL ---- */
 function setType(t){
-  currentType=t;
-  document.querySelectorAll('#typeToggle button').forEach(b=>b.classList.toggle('active',b.dataset.type===t));
-  document.getElementById('creditFields').classList.toggle('show',t==='credit');
-  document.getElementById('annualFields').classList.toggle('show',t==='annual');
-  document.getElementById('freqFields').classList.toggle('show',t==='cyclic'||t==='media'||t==='sub'||t==='other');
+currentType=t;
+document.querySelectorAll('#typeToggle button').forEach(b=>b.classList.toggle('active',b.dataset.type===t));
+document.getElementById('creditFields').classList.toggle('show',t==='credit');
+document.getElementById('annualFields').classList.toggle('show',t==='annual');
+document.getElementById('freqFields').classList.toggle('show',t==='cyclic'||t==='media'||t==='sub'||t==='other');
 }
 function updateFreqMonthVisibility(){
-  const f=parseInt(document.getElementById('fFreq').value)||1;
-  document.getElementById('freqMonthField').style.display=f>1?'block':'none';
-  document.getElementById('freqHint').style.display=f>1?'block':'none';
+const f=parseInt(document.getElementById('fFreq').value)||1;
+document.getElementById('freqMonthField').style.display=f>1?'block':'none';
+document.getElementById('freqHint').style.display=f>1?'block':'none';
 }
-
 function openModal(id){
-  editingId=id;
-  const data=loadData();
-  const it=id?data.items.find(x=>x.id===id):null;
-
-  document.getElementById('modalTitle').textContent=it?'Edytuj płatność':'Nowa płatność';
-  document.getElementById('fName').value=it?it.name:'';
-  document.getElementById('fAmount').value=it?it.amount:'';
-  document.getElementById('fDay').value=it&&it.day?it.day:'';
-  document.getElementById('fNote').value=it&&it.note?it.note:'';
-  document.getElementById('fTotalInst').value=it&&it.totalInstallments?it.totalInstallments:'';
-  document.getElementById('fCurrentInst').value=it&&it.currentInstallment?it.currentInstallment:1;
-  document.getElementById('fRemaining').value=it&&it.remaining!=null?it.remaining:'';
-  document.getElementById('fEndDate').value=it&&it.endDate?it.endDate:'';
-  document.getElementById('fAnnualMonth').value=it&&it.annualMonth?it.annualMonth:'';
-  document.getElementById('fFreq').value=it&&it.freq?it.freq:1;
-  document.getElementById('fFreqMonth').value=it&&it.freqMonth?it.freqMonth:((viewMonth%12)+1);
-  updateFreqMonthVisibility();
-
-  setType(it?it.type:'cyclic');
-  document.getElementById('modalBg').classList.add('open');
+editingId=id;
+const data=loadData();
+const it=id?data.items.find(x=>x.id===id):null;
+document.getElementById('modalTitle').textContent=it?'Edytuj płatność':'Nowa płatność';
+document.getElementById('fName').value=it?it.name:'';
+document.getElementById('fAmount').value=it?it.amount:'';
+document.getElementById('fDay').value=it&&it.day?it.day:'';
+document.getElementById('fNote').value=it&&it.note?it.note:'';
+document.getElementById('fTotalInst').value=it&&it.totalInstallments?it.totalInstallments:'';
+document.getElementById('fCurrentInst').value=it&&it.currentInstallment?it.currentInstallment:1;
+document.getElementById('fRemaining').value=it&&it.remaining!=null?it.remaining:'';
+document.getElementById('fEndDate').value=it&&it.endDate?it.endDate:'';
+document.getElementById('fAnnualMonth').value=it&&it.annualMonth?it.annualMonth:'';
+document.getElementById('fFreq').value=it&&it.freq?it.freq:1;
+document.getElementById('fFreqMonth').value=it&&it.freqMonth?it.freqMonth:((viewMonth%12)+1);
+updateFreqMonthVisibility();
+setType(it?it.type:'cyclic');
+document.getElementById('modalBg').classList.add('open');
 }
 function closeModal(){ document.getElementById('modalBg').classList.remove('open'); editingId=null; }
-
 function saveItem(){
-  const name=document.getElementById('fName').value.trim();
-  const amount=parseFloat(document.getElementById('fAmount').value);
-  if(!name||isNaN(amount)){ alert('Podaj przynajmniej nazwę i kwotę.'); return; }
-
-  const data=loadData();
-  const day=parseInt(document.getElementById('fDay').value)||null;
-  const note=document.getElementById('fNote').value.trim();
-
-  let item;
-  if(editingId){
-    item=data.items.find(x=>x.id===editingId);
-    if(!item) return;
-  } else {
-    item={id:'id'+Date.now()};
-    data.items.push(item);
-  }
-
-  item.type=currentType;
-  item.name=name;
-  item.amount=amount;
-  item.day=day;
-  item.note=note;
-
-  if(currentType==='credit'){
-    item.totalInstallments=parseInt(document.getElementById('fTotalInst').value)||1;
-    item.currentInstallment=parseInt(document.getElementById('fCurrentInst').value)||1;
-    const rem=document.getElementById('fRemaining').value;
-    item.remaining=rem!==''?parseFloat(rem):null;
-    item.endDate=document.getElementById('fEndDate').value.trim();
-  }
-  if(currentType==='annual'){
-    item.annualMonth=parseInt(document.getElementById('fAnnualMonth').value)||1;
-  }
-  if(currentType==='cyclic'||currentType==='media'||currentType==='sub'||currentType==='other'){
-    item.freq=parseInt(document.getElementById('fFreq').value)||1;
-    item.freqMonth=parseInt(document.getElementById('fFreqMonth').value)||1;
-  }
-
-  saveData(data); closeModal(); render();
+const name=document.getElementById('fName').value.trim();
+const amount=parseFloat(document.getElementById('fAmount').value);
+if(!name||isNaN(amount)){ alert('Podaj przynajmniej nazwę i kwotę.'); return; }
+const data=loadData();
+const day=parseInt(document.getElementById('fDay').value)||null;
+const note=document.getElementById('fNote').value.trim();
+let item;
+if(editingId){
+item=data.items.find(x=>x.id===editingId);
+if(!item) return;
+} else {
+item={id:'id'+Date.now()};
+data.items.push(item);
+}
+item.type=currentType;
+item.name=name;
+item.amount=amount;
+item.day=day;
+item.note=note;
+if(currentType==='credit'){
+item.totalInstallments=parseInt(document.getElementById('fTotalInst').value)||1;
+item.currentInstallment=parseInt(document.getElementById('fCurrentInst').value)||1;
+const rem=document.getElementById('fRemaining').value;
+item.remaining=rem!==''?parseFloat(rem):null;
+item.endDate=document.getElementById('fEndDate').value.trim();
+}
+if(currentType==='annual'){
+item.annualMonth=parseInt(document.getElementById('fAnnualMonth').value)||1;
+}
+if(currentType==='cyclic'||currentType==='media'||currentType==='sub'||currentType==='other'){
+item.freq=parseInt(document.getElementById('fFreq').value)||1;
+item.freqMonth=parseInt(document.getElementById('fFreqMonth').value)||1;
+}
+saveData(data); closeModal(); render();
 }
 
-/* ---- EXPORT / IMPORT ---- */
 function exportData(){
-  const data=loadData();
-  data.lastExport=new Date().toISOString();
-  saveData(data);
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download='platnosci-kopia-'+new Date().toISOString().slice(0,10)+'.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  render();
+const data=loadData();
+data.lastExport=new Date().toISOString();
+saveData(data);
+const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url; a.download='platnosci-kopia-'+new Date().toISOString().slice(0,10)+'.json';
+document.body.appendChild(a); a.click(); document.body.removeChild(a);
+URL.revokeObjectURL(url);
+render();
 }
 function importData(event){
-  const file=event.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    try{
-      const parsed=JSON.parse(e.target.result);
-      if(!parsed||!Array.isArray(parsed.items)){ alert('Niepoprawny plik.'); return; }
-      if(!confirm('Zastąpić obecne dane ('+parsed.items.length+' pozycji)?')) return;
-      saveData(parsed); render(); alert('Dane wczytane.');
-    }catch(err){ alert('Błąd: '+err.message); }
-    event.target.value='';
-  };
-  reader.readAsText(file);
+const file=event.target.files[0]; if(!file) return;
+const reader=new FileReader();
+reader.onload=(e)=>{
+try{
+const parsed=JSON.parse(e.target.result);
+if(!parsed||!Array.isArray(parsed.items)){ alert('Niepoprawny plik.'); return; }
+if(!confirm('Zastąpić obecne dane ('+parsed.items.length+' pozycji)?')) return;
+saveData(parsed); render(); alert('Dane wczytane.');
+}catch(err){ alert('Błąd: '+err.message); }
+event.target.value='';
+};
+reader.readAsText(file);
 }
 
 document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
-
 const _n=new Date(); viewYear=_n.getFullYear(); viewMonth=_n.getMonth();
+
+/* ====== LOGOWANIE I SYNCHRONIZACJA — DODANE ====== */
+const syncStatusEl = document.getElementById('syncStatus');
+
+function startSync(){
+// Pokaż od razu dane lokalne, żeby aplikacja nie "mrugała" pustym ekranem
 render();
+
+// Nasłuchuj na zmiany w Firebase (z DOWOLNEGO urządzenia, łącznie z tym)
+fbRef.on('value', (snapshot) => {
+const val = snapshot.val();
+if(val){
+_suppressUpload = true; // nie wysyłaj z powrotem tego, co właśnie przyszło
+localStorage.setItem('platnosci_v3', JSON.stringify(val));
+_suppressUpload = false;
+render();
+syncStatusEl.textContent = 'Zsynchronizowano ✓';
+setTimeout(()=>{ syncStatusEl.style.display='none'; }, 2000);
+} else {
+// baza pusta — wyślij to, co mamy lokalnie, żeby ją zainicjować
+saveData(loadData());
+}
+}, (err)=>{
+syncStatusEl.textContent = 'Błąd synchronizacji — sprawdź logowanie/reguły';
+console.error(err);
+});
+}
+
+fbAuth.onAuthStateChanged((user) => {
+if(user){
+syncStatusEl.textContent = 'Zalogowano, synchronizuję...';
+startSync();
+} else {
+syncStatusEl.textContent = 'Wymagane logowanie';
+const email = prompt('Zaloguj się — podaj e-mail (Firebase):');
+const pass = prompt('Podaj hasło:');
+if(email && pass){
+fbAuth.signInWithEmailAndPassword(email, pass).catch(err=>{
+alert('Błąd logowania: ' + err.message);
+syncStatusEl.textContent = 'Błąd logowania';
+render();
+});
+} else {
+render();
+}
+}
+});
+
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
